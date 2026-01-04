@@ -38,8 +38,12 @@ class Router {
             return;
         }
 
+        $container = new Container();
         if (is_array($callback)) {
-            $callback[0] = new $callback[0]();
+            $className = $callback[0];
+
+            $controllerObject = $container->get($className);
+            $callback[0] = $controllerObject;
         }
 
         echo call_user_func($callback);

@@ -1,15 +1,18 @@
 <?php
 namespace App\Controllers;
 
-use App\Database;
 use App\Models\User;
 
 class HomeController extends Controller
 {
+    public function __construct(private User $user)
+    {
+        //
+    }
+
     public function index()
     {
-        $userModel = new User();
-        $users = $userModel->getAllUsers();
+        $users = $this->user->getAllUsers();
 
         $data = [
             'page_title' => 'قائمة المستخدمين',
@@ -22,8 +25,7 @@ class HomeController extends Controller
         $name = $_POST['name'];
         $email = $_POST['email'];
 
-        $userModel = new User();
-        $userModel->create($name, $email);
+        $this->user->create($name, $email);
 
         header('Location: /');
         return;
