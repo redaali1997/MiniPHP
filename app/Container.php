@@ -5,8 +5,18 @@ use ReflectionClass;
 
 class Container
 {
+    private array $bindings = [];
+
+    public function bind($interface, $implementation) {
+        $this->bindings[$interface] = $implementation;
+    }
+
     public function get(string $className)
     {
+        if(isset($this->bindings[$className])) {
+            $className = $this->bindings[$className];
+        }
+        
         // HomeController(User $user, int $name = 0)
         $reflector = new ReflectionClass($className);
 

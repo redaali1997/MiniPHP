@@ -1,18 +1,18 @@
 <?php
 namespace App\Controllers;
 
-use App\Models\User;
+use App\Interfaces\UserRepositoryInterface;
 
 class HomeController extends Controller
 {
-    public function __construct(private User $user)
+    public function __construct(private UserRepositoryInterface $userRepositoryInterface)
     {
         //
     }
 
     public function index()
     {
-        $users = $this->user->getAllUsers();
+        $users = $this->userRepositoryInterface->getAllUsers();
 
         $data = [
             'page_title' => 'قائمة المستخدمين',
@@ -25,7 +25,7 @@ class HomeController extends Controller
         $name = $_POST['name'];
         $email = $_POST['email'];
 
-        $this->user->create($name, $email);
+        $this->userRepositoryInterface->create($name, $email);
 
         header('Location: /');
         return;

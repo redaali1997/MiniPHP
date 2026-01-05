@@ -2,6 +2,8 @@
 
 use App\Controllers\HomeController;
 use App\Controllers\TaskController;
+use App\Interfaces\UserRepositoryInterface;
+use App\Repositories\UserRepository;
 use App\Router;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -17,4 +19,5 @@ $router->post('/api/tasks', [TaskController::class, 'store']);
 $router->put('/api/tasks', [TaskController::class, 'update']);
 $router->delete('/api/tasks', [TaskController::class, 'delete']);
 
+$router->bind(UserRepositoryInterface::class, UserRepository::class);
 $router->resolve();
