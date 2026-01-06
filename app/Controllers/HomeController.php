@@ -2,6 +2,7 @@
 namespace App\Controllers;
 
 use App\Interfaces\UserRepositoryInterface;
+use App\Validator;
 
 class HomeController extends Controller
 {
@@ -22,10 +23,22 @@ class HomeController extends Controller
     }
 
     public function store() {
-        $name = $_POST['name'];
-        $email = $_POST['email'];
+        // XSS Protection
+        $cleanedData = Validator::sanitize($_POST);
 
-        $this->userRepositoryInterface->create($name, $email);
+        $validator = new Validator();
+        $isValid = $validator->validate($cleanedData, [
+            'name' => 'required|string|min:3',
+            'email' => 'required|email'
+        ]);
+
+        if(!$isValid) {
+            header('Content-Type: application/json');
+            echo json_encode(['errors' => $validator->getErrors()]);
+            exit;
+        }
+
+        $this->userRepositoryInterface->create($cleanedData['name'], $cleanedData['email']);
 
         header('Location: /');
         return;
