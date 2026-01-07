@@ -7,16 +7,32 @@ class Container
 {
     private array $bindings = [];
 
-    public function bind($interface, $implementation) {
+    private array $instances = [];
+
+    public function bind($interface, $implementation)
+    {
         $this->bindings[$interface] = $implementation;
+    }
+
+    public function singleton($interface, $implementation)
+    {
+        $this->bindings[$interface] = $implementation;
+    }
+
+    public function setInstance($interface, $instance) {
+        $this->instances[$interface] = $instance;
     }
 
     public function get(string $className)
     {
-        if(isset($this->bindings[$className])) {
+        if(isset($this->instances[$className])) {
+            return $this->instances[$className];
+        }
+
+        if (isset($this->bindings[$className])) {
             $className = $this->bindings[$className];
         }
-        
+
         // HomeController(User $user, int $name = 0)
         $reflector = new ReflectionClass($className);
 
@@ -25,20 +41,20 @@ class Container
         }
 
         $constructor = $reflector->getConstructor();
-        
+
         if (is_null($constructor)) {
             return new $className;
         }
 
         $parameters = $constructor->getParameters();
-        
+
         $dependencies = [];
-        foreach($parameters as $parameter) {
+        foreach ($parameters as $parameter) {
             $type = $parameter->getType();
-            if($type && !$type->isBuiltin()) {
+            if ($type && !$type->isBuiltin()) {
                 $dependencies[] = $this->get($type->getName());
             } else {
-                if($parameter->isDefaultValueAvailable()) {
+                if ($parameter->isDefaultValueAvailable()) {
                     $dependencies[] = $parameter->getDefaultValue();
                 } else {
                     throw new \Exception("Cannot resolve parameter {$parameter->getName()}");

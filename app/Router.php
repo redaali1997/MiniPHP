@@ -5,7 +5,7 @@ class Router
 {
     protected array $routes = [];
 
-    protected $container;
+    public $container;
 
     protected $middlewares = [];
 

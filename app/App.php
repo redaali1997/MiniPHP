@@ -1,8 +1,17 @@
 <?php
 namespace App;
 
-class App {
-    public function __construct() {
-        echo "نظام Autoloading يعمل بنجاح! 🚀";
+class App
+{
+    private static $container;
+
+    public static function setContainer(Container $container)
+    {
+        self::$container = $container;
+    }
+
+    public static function container(): Container
+    {
+        return self::$container;
     }
 }
