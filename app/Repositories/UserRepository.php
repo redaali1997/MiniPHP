@@ -3,9 +3,11 @@ namespace App\Repositories;
 
 use App\Database;
 use App\Interfaces\UserRepositoryInterface;
+use App\Models\User;
 use PDO;
 
-class UserRepository implements UserRepositoryInterface {
+class UserRepository implements UserRepositoryInterface
+{
     private $conn;
 
     public function __construct()
@@ -16,21 +18,14 @@ class UserRepository implements UserRepositoryInterface {
 
     public function getAllUsers()
     {
-        $query = "SELECT * FROM users";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute();
-
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return User::all();
     }
 
     public function create(string $name, string $email)
     {
-        $query = "INSERT INTO users (name, email) VALUES (:name,:email)";
-
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':name', $name);
-        $stmt->bindParam(':email', $email);
-
-        return $stmt->execute();
+        $user = new User;
+        $user->name = $name;
+        $user->email = $email;
+        $user->save();
     }
 }

@@ -22,7 +22,8 @@ class HomeController extends Controller
         return $this->render('home', $data);
     }
 
-    public function store() {
+    public function store()
+    {
         // XSS Protection
         $cleanedData = Validator::sanitize($_POST);
 
@@ -32,7 +33,7 @@ class HomeController extends Controller
             'email' => 'required|email'
         ]);
 
-        if(!$isValid) {
+        if (!$isValid) {
             header('Content-Type: application/json');
             echo json_encode(['errors' => $validator->getErrors()]);
             exit;

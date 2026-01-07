@@ -41,9 +41,9 @@
         <tbody>
             <?php foreach($users_list as $user): ?>
                 <tr>
-                    <td><?= $user['id'] ?></td>
-                    <td><?= $user['name'] ?></td>
-                    <td><?= $user['email'] ?></td>
+                    <td><?= $user->id ?></td>
+                    <td><?= $user->name ?></td>
+                    <td><?= $user->email ?></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
