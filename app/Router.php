@@ -7,9 +7,16 @@ class Router
 
     protected $container;
 
+    protected $middlewares = [];
+
     public function __construct()
     {
         $this->container = new Container();
+    }
+
+    public function addMiddleware(string $middleware)
+    {
+        $this->middlewares[] = $middleware;
     }
 
     public function get(string $path, $callback)
@@ -61,6 +68,14 @@ class Router
             $callback[0] = $controllerObject;
         }
 
-        echo call_user_func($callback);
+        $request = array_merge($_GET, $_POST);
+
+        echo (new Pipeline())
+            ->send($request)
+            ->through($this->middlewares)
+            ->then(function ($request) use ($callback) {
+                $_POST = $request;
+                return call_user_func($callback);
+            });
     }
 }
